@@ -9,7 +9,7 @@ module.exports = class PageController{
         // check if there's missing information
         if(!name){
             return res.status(400).json({
-                message: "Necessário preencher o nome do page."
+                message: "Necessário preencher o nome da page."
             });
         }
 
