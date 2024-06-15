@@ -4,6 +4,6 @@ const StoryController = require("../controllers/StoryController");
 const checkTokenByTeam = require("../middleware/checkTokenByTeam");
 
 router.post("/create", checkTokenByTeam,  StoryController.create);
-router.get("/TeamId", checkTokenByTeam, StoryController.list)
+router.get("/:TeamId", checkTokenByTeam, StoryController.list)
 
 module.exports = router;

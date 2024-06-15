@@ -40,6 +40,15 @@ module.exports = class StoryController{
 
         res.status(201).json({
             message: "História criada com sucesso.",
-        })
+        });
+    }
+
+    static async list(req, res){
+        
+        const TeamId = req.params.TeamId;
+        const stories = await Story.findAll({where: {TeamId: TeamId}});
+
+        res.json(stories);
+
     }
 }

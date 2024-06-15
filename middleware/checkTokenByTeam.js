@@ -7,7 +7,7 @@ module.exports = async function checkTokenByTeam(req, res, next){
 
     let TeamId = req.body.TeamId;
     if(!TeamId)
-        TeamId = NumbeR(req.params.TeamId);
+        TeamId = Number(req.params.TeamId);
 
     // team validation
     if(!TeamId){
