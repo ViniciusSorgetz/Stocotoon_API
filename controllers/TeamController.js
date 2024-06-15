@@ -27,6 +27,12 @@ module.exports = class TeamController{
                 message: "Necessário preencher o nome da equipe."
             });
         }
+        const checkTeam = await Team.findOne({where: {name: name}});
+        if(checkTeam){
+            return res.status(400).json({
+                message: "Nome da equipe já em uso."
+            })
+        }
         
         // team creation
         let team;
