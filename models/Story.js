@@ -8,6 +8,10 @@ const Story = db.define("Story", {
         type: DataTypes.STRING,
         require: true,
         allowNull: false,
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
     }
 });
 

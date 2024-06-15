@@ -4,7 +4,9 @@ const User = require("../models/User");
 
 module.exports = function checkTokenByUser(req, res, next){
 
-    const UserId = req.body.UserId;
+    let UserId = req.body.UserId;
+    if(!UserId)
+        UserId = Number(req.params.UserId);
 
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];

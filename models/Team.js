@@ -8,6 +8,10 @@ const Team = db.define("Team", {
         type: DataTypes.STRING,
         require: true,
         allowNull: false,
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
     }
 });
 

@@ -34,8 +34,8 @@ app.use("/picture", pictureRoutes);
 app.use("/script", scriptRoutes);
 
 db
-    .sync({force: true})
-    //.sync()
+    //.sync({force: true})
+    .sync()
     .then(() => {
         app.listen(4000);
     })

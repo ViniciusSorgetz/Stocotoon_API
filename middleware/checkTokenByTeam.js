@@ -1,28 +1,30 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const Chapter = require("../models/Chapter");
+const Team = require("../models/Team");
+const Member = require("../models/Member");
 
-module.exports = async function checkTokenByChapter(req, res, next){
+module.exports = async function checkTokenByTeam(req, res, next){
 
-    const ChapterId = req.body.ChapterId;
+    let TeamId = req.body.TeamId;
+    if(!TeamId)
+        TeamId = NumbeR(req.params.TeamId);
 
-    if(!ChapterId){
+    // team validation
+    if(!TeamId){
         return res.status(400).json({
-            message: "ChapterId necessário."
+            message: "TeamId necessário."
         })
     }
 
-    //check if chapter exists
-    const chapter = await Chapter.findOne({where: {id: ChapterId}});
-    if(!chapter){
+    const team = await Team.findOne({where: {id: TeamId}});
+    if(!team){
         return res.status(404).json({
-            message: "Pasta não encontrada."
+            message: "Equipe não encontrada."
         });
     }
 
-    const UserId = chapter.UserId;
+    // user validation
 
-    // check if token and UserId match
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -32,6 +34,7 @@ module.exports = async function checkTokenByChapter(req, res, next){
         });
     }
 
+    // verify token by ownerId
     try {
         const secret = process.env.SECRET;
         jwt.verify(token, secret, async (err, decodedToken) => {
@@ -40,8 +43,8 @@ module.exports = async function checkTokenByChapter(req, res, next){
                     message: "Token inválido."
                 });
             }
-
-            if (decodedToken.id !== UserId) {
+            const member = await Member.findOne({where: {TeamId: TeamId, UserId: decodedToken.id}});
+            if(!member){
                 return res.status(400).json({
                     message: "Token de usuário inválido."
                 });
@@ -56,4 +59,7 @@ module.exports = async function checkTokenByChapter(req, res, next){
             message: "Token inválido."
         })
     }
+
+    //verify token by memberId
+
 }
