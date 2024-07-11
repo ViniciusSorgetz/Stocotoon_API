@@ -1,19 +1,30 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const Team = require("../models/Team");
 const Member = require("../models/Member");
+const Team = require("../models/Team");
+const Story = require("../models/Story");
 
-module.exports = async function checkTokenByTeam(req, res, next){
+module.exports = async function checkTokenByStory(req, res, next){
 
-    const TeamId = req.body.TeamId || req.params.TeamId;
+    const StoryId = req.body.StoryId || req.params.StoryId;
 
-    // team validation
-    if(!TeamId){
+    // story validation
+    if(!StoryId || StoryId === ":StoryId"){
         return res.status(400).json({
-            message: "TeamId necessário."
+            message: "StoryId necessário."
         });
     }
 
+    const story = await Story.findOne({where: {id: StoryId}});
+    
+    if(!story){
+        return res.status(404).json({
+            message: "Equipe não encontrada."
+        });
+    }
+
+    // get Team which story belongs to
+    const TeamId = story.TeamId
     const team = await Team.findOne({where: {id: TeamId}});
     if(!team){
         return res.status(404).json({
@@ -28,7 +39,7 @@ module.exports = async function checkTokenByTeam(req, res, next){
 
     if(!token){
         return res.status(401).json({
-            message: "Acesso negado"
+            message: "Acesso negado."
         });
     }
 

@@ -2,7 +2,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-module.exports = function checkTokenByUser(req, res, next){
+module.exports = async function checkTokenByUser(req, res, next){
 
     let UserId = req.body.UserId;
     if(!UserId)

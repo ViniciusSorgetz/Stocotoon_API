@@ -1,32 +1,53 @@
 const Chapter = require("../models/Chapter");
-const User = require("../models/User");
 
 module.exports = class ChapterController{
+
     static async create(req, res){
 
         const chapter = {
             name: req.body.name,
-            UserId: req.body.UserId
+            StoryId: req.body.StoryId
         }
 
-        const user = await User.findOne({where: {id: chapter.UserId}});
-    
-        if(!user){
-            res.json({
-                message: "Usuário não encontrado",
+        if(!chapter.name || chapter.name.trim().length === 0){
+            return res.status(400).json({
+                message: "Nome do capítulo necessário"
             });
-            return;
+        }
+
+        const checkChapter = await Chapter.findOne({where: {name: chapter.name}});
+        if(checkChapter){
+            return res.status(400).json({
+                message: "Nome de capítulo já em uso."
+            });
         }
 
         try {
             Chapter.create(chapter);
-            res.json({
-                message: "Pasta criada com sucesso!"
+            return res.status(200).json({
+                message: "Capítulo criado com sucesso!"
             })
-        } catch (error) {
-            res.json({
+        } 
+        catch (error) {
+            return res.status(500).json({
                 message: "Erro ao criar a pasta."
+            });
+        }
+    }
+
+    static async list(req, res){
+
+        const StoryId = req.params.StoryId;
+        
+        try {
+            const chapters = await Chapter.findAll({where: {StoryId: StoryId}});
+            res.status(200).json(chapters);
+        } 
+        catch (error) {
+            res.status(500).json({
+                message: "Erro ao listar capítulos"
             })
         }
+
     }
 }
