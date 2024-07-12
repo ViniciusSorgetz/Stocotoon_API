@@ -1,6 +1,7 @@
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+
+const getDcodedToken = require("../utils/getDecodedToken");
 
 module.exports = async function checkTokenByUser(req, res, next){
 
@@ -17,27 +18,14 @@ module.exports = async function checkTokenByUser(req, res, next){
         });
     }
 
-    try {
-        const secret = process.env.SECRET;
-        jwt.verify(token, secret, async (err, decodedToken) => {
-            if (err) {
-                return res.status(400).json({
-                    message: "Token inválido."
-                });
-            }
-            if (decodedToken.id !== UserId) {
-                return res.status(400).json({
-                    message: "Token de usuário inválido."
-                });
-            }
-            else{
-                next();
-            }
-        });
+    const decodedToken = await getDcodedToken(token);
 
-    } catch (error) {
-        res.status(400).json({
-            message: "Token inválido."
-        })
+    if (decodedToken !== UserId) {
+        return res.status(400).json({
+            message: "Token de usuário inválido."
+        });
+    }
+    else{
+        next();
     }
 }

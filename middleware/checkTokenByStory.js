@@ -1,8 +1,9 @@
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
 const Member = require("../models/Member");
 const Team = require("../models/Team");
 const Story = require("../models/Story");
+
+const getDecodedToken = require("../utils/getDecodedToken");
 
 module.exports = async function checkTokenByStory(req, res, next){
 
@@ -44,28 +45,14 @@ module.exports = async function checkTokenByStory(req, res, next){
     }
 
     // verify token by ownerId
-    try {
-        const secret = process.env.SECRET;
-        jwt.verify(token, secret, async (err, decodedToken) => {
-            if(err){
-                return res.status(400).json({
-                    message: "Token inválido."
-                });
-            }
-            const member = await Member.findOne({where: {TeamId: TeamId, UserId: decodedToken.id}});
-            if(!member){
-                return res.status(400).json({
-                    message: "Token de usuário inválido."
-                });
-            }
-            else{
-                next();
-            }
+    const UserId = await getDecodedToken(token);
+    const member = await Member.findOne({where: {TeamId: TeamId, UserId: UserId}});
+    if(!member){
+        return res.status(400).json({
+            message: "Token de usuário inválido."
         });
-
-    } catch (error) {
-        res.status(400).json({
-            message: "Token inválido."
-        })
+    }
+    else{
+        next();
     }
 }

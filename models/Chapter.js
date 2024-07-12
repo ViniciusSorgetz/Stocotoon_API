@@ -6,7 +6,6 @@ const Story = require("../models/Story")
 const Chapter = db.define("Chapter", {
     name: {
         type: DataTypes.STRING,
-        require: true,
         allowNull: false,
     }
 });

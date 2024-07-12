@@ -1,17 +1,18 @@
-const { DataTypes, INTEGER } = require("sequelize");
+const { DataTypes } = require("sequelize");
 const db = require("../db");
 
-const Team = require("../models/Team");
+const Team = require("./Team");
+const User = require("./User");
 
 const Member = db.define("Member", {
-    UserId: {
-        type: INTEGER,
-        require: true,
-        allowNull: false,
-    },
+    role: {
+        type: DataTypes.ENUM,
+        values: ["member", "owner"],
+        allowNull: false
+    }
 });
 
-Team.hasMany(Member);
-Member.belongsTo(Team);
+User.belongsToMany(Team, {through: Member});
+Team.belongsToMany(User, {through: Member});
 
 module.exports = Member;

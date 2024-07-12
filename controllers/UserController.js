@@ -50,6 +50,7 @@ module.exports = class UserController {
             res.status(201).json({message: "Usuário criado com sucesso!"});
             
         } catch (error) {
+            console.log(error);
             res.status(500).json({message: "Erro ao criar o usuário. Tente novamente mais tarde."});
         }
     }

@@ -2,6 +2,8 @@ const Team = require("../models/Team");
 const Member = require("../models/Member");
 const User = require("../models/User");
 
+const getDocodedToken = require("../utils/getDecodedToken");
+
 module.exports = class TeamController{
 
     static async create(req, res){
@@ -53,8 +55,9 @@ module.exports = class TeamController{
             const createdTeam = await Team.create(team);
             await Member.create({
                 UserId, 
-                TeamId: createdTeam.id}
-            );
+                TeamId: createdTeam.id,
+                role: "owner"
+            });
             res.status(201).json({
                 message: "Equipe criada com sucesso!"
             });
@@ -78,12 +81,20 @@ module.exports = class TeamController{
         }
 
         // get user teams
-        const teamsId = await Member.findAll({where: {UserId: UserId}});
-        const teams = [];
-        for(let i=0; i<teamsId.length; i++){
-            const team = await Team.findOne({where: {id: teamsId[i].id}});
-            teams.push(team);
-        }
-        res.json(teams);
+        const userTeams = await Member.findAll({where: {UserId: UserId}, raw: true});
+        const teams = await Promise.all (userTeams.map(async userTeam => 
+            await Team.findOne({where: {id: userTeam.TeamId}, raw: true})
+        ));
+        res.status(200).json(teams);
+    }
+
+    static async add (req, res){
+
+        const authHeader = req.headers["authorization"];
+        const token = authHeader && authHeader.split(" ")[1];
+
+        const UserId = await getDocodedToken(token);
+
+        res.status(200).json({message: UserId});
     }
 }
