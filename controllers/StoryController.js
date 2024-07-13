@@ -21,19 +21,15 @@ module.exports = class StoryController{
         }
 
         // create story
-        let story;
-        if(description){
-            story = {
-                TeamId, 
-                name: name.trim(), 
-                description: description.trim(),
-            }
+        const story = description 
+        ? {
+            TeamId, 
+            name: name.trim(), 
+            description: description.trim(),
         }
-        else{
-            story = {
-                TeamId, 
-                name: name.trim()
-            }
+        : {
+            TeamId, 
+            name: name.trim()
         }
 
         await Story.create(story);

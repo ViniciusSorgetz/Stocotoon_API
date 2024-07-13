@@ -3,14 +3,8 @@ const db = require("../db");
 const Page = require("../models/Page");
 
 const Script = db.define("Script", {
-    name: {
-        type: DataTypes.STRING,
-        require: true,
-        allowNull: false,
-    },
     content: {
-        type: DataTypes.TEXT,
-        require: true,
+        type: DataTypes.JSON,
         allowNull: false,
     },
 });

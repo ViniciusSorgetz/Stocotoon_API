@@ -15,7 +15,10 @@ module.exports = class ChapterController{
             });
         }
 
-        const checkChapter = await Chapter.findOne({where: {name: chapter.name}});
+        const checkChapter = await Chapter.findOne({where: {
+            name: chapter.name, 
+            StoryId: chapter.StoryId
+        }});
         if(checkChapter){
             return res.status(400).json({
                 message: "Nome de capítulo já em uso."

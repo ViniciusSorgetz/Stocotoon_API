@@ -88,13 +88,129 @@ module.exports = class TeamController{
         res.status(200).json(teams);
     }
 
-    static async add (req, res){
+    static async addMember (req, res){
 
+        // check token and if token's user has "owner" role
         const authHeader = req.headers["authorization"];
         const token = authHeader && authHeader.split(" ")[1];
 
         const UserId = await getDocodedToken(token);
+        const TeamId = req.body.TeamId;
 
-        res.status(200).json({message: UserId});
+        if(!TeamId){
+            return res.status(400).json({
+                message: "Necessário informar o id do time."
+            });
+        }
+
+        const owner = await Member.findOne({where: {UserId: UserId, TeamId: TeamId}});
+
+        if(!owner || owner.role !== "owner"){
+            return res.status(400).json({
+                message: "Usuário sem permissão na equipe."
+            });
+        }
+    
+        // check if member exists
+        const memberEmail = req.body.email;
+
+        if(!memberEmail){
+            return res.status(400).json({
+                message: "Necessário informar o e-mail do membro"
+            })
+        }
+
+        const member = await User.findOne({where: {email: memberEmail}});
+
+        if(!member){
+            return res.status(404).json({
+                message: "Usuário não encontrado."
+            });
+        }
+
+        // check if member isn't already in the team
+        const checkMember = await Member.findOne({where: {UserId: member.id, TeamId: TeamId}});
+        if(checkMember){
+            return res.status(400).json({
+                message: "Este usuário já está nesta equipe."
+            });
+        }
+
+        try {
+            await Member.create({
+                UserId: member.id,
+                TeamId: TeamId,
+                role: "member"
+            });
+            return res.status(200).json({
+                message: "Usuário adicionado ao time."
+            });
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Ocorreu um erro. Tente novamente mais tarde."
+            });
+        }
+    }
+
+    static async removeMember(req, res){
+        
+        // check token and if token's user has "owner" role
+        const authHeader = req.headers["authorization"];
+        const token = authHeader && authHeader.split(" ")[1];
+
+        const UserId = await getDocodedToken(token);
+        const TeamId = req.body.TeamId;
+
+        if(!TeamId){
+            return res.status(400).json({
+                message: "Necessário informar o id do time."
+            });
+        }
+
+        const owner = await Member.findOne({where: {UserId: UserId, TeamId: TeamId}});
+
+        if(!owner || owner.role !== "owner"){
+            return res.status(400).json({
+                message: "Usuário sem permissão na equipe."
+            });
+        }
+    
+        // check if member exists
+        const memberEmail = req.body.email;
+
+        if(!memberEmail){
+            return res.status(400).json({
+                message: "Necessário informar o e-mail do membro"
+            })
+        }
+
+        const member = await User.findOne({where: {email: memberEmail}});
+
+        if(!member){
+            return res.status(404).json({
+                message: "Usuário não encontrado."
+            });
+        }
+
+        // check if member is in the team
+        const checkMember = await Member.findOne({where: {UserId: member.id, TeamId: TeamId}});
+        if(!checkMember){
+            return res.status(400).json({
+                message: "Este usuário não está nesta equipe."
+            });
+        }
+
+        try {
+            await Member.destroy({where: {UserId: member.id, TeamId: TeamId}});
+            return res.status(200).json({
+                message: "Usuário removido do time."
+            });
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Ocorreu um erro. Tente novamente mais tarde."
+            });
+        }
     }
 }

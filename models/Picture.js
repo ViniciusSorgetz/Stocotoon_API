@@ -3,14 +3,8 @@ const db = require("../db");
 const Page = require("../models/Page");
 
 const Picture = db.define("Picture", {
-    name: {
-        type: DataTypes.STRING,
-        require: true,
-        allowNull: false,
-    },
-    src: {
-        type: DataTypes.STRING,
-        require: true,
+    content: {
+        type: DataTypes.JSON,
         allowNull: false,
     }
 });

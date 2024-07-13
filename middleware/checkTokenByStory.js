@@ -20,7 +20,7 @@ module.exports = async function checkTokenByStory(req, res, next){
     
     if(!story){
         return res.status(404).json({
-            message: "Equipe não encontrada."
+            message: "História não encontrada."
         });
     }
 
