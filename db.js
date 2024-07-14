@@ -1,6 +1,12 @@
-const { Sequelize } = require("sequelize");
+require('dotenv').config();
 
-const sequelize = new Sequelize("minhaapi", "root", "password", {
+const { Sequelize } = require("sequelize");
+const DB = process.env.DB;
+const PASSWORD = process.env.PASSWORD;
+
+console.log(DB);
+
+const sequelize = new Sequelize( DB, "root", PASSWORD, {
     host: "localhost",
     dialect: "mysql"
 });
