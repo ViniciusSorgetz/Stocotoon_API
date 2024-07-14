@@ -26,21 +26,52 @@ module.exports = class PageController{
             const page = await Page.create({ChapterId, name});
             await Picture.create({
                 PageId: page.id,
-                content: {elements: "aqui terão os elements"}
+                content: {
+                    layers: [
+                      {
+                        name: "Layer-1",
+                        id: 1,
+                        elements: [],
+                        hidden: false
+                      }
+                    ],
+                    selectedLayer: {
+                      name: "Layer-1",
+                      id: 1,
+                      elements: [],
+                      hidden: false
+                    },
+                    layerIndex: 0,
+                    layersQty: 1,
+                }
             });
             await Script.create({
                 PageId: page.id,
-                content:{text: "aqui terá o conteúdo do roteiro"}
+                content: {text: "aqui terá o conteúdo do roteiro"}
             });
-            Script.create();
 
-            res.status(201).json({
+            return res.status(201).json({
                 message: "Página criada com sucesso."
             })        
-        } catch (error) {
+        } 
+        catch (error) {
             res.status(500).json({
                 message: "Erro ao criar página. Tente novamente mais tarde."
-            })
+            });
+        }
+    }
+
+    static async list(req, res){
+
+        try {
+            const ChapterId = req.params.ChapterId;
+            const pages = await Page.findAll({where: {ChapterId: ChapterId}, raw: true});
+            res.status(200).json(pages);
+        } 
+        catch (error) {
+            res.status(500).json({
+                message: "Erro ao listar páginas. Tente novamente mais tarde."
+            });
         }
     }
 }

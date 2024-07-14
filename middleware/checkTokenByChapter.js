@@ -9,7 +9,7 @@ const getDecodedToken = require("../utils/getDecodedToken");
 
 module.exports = async function checkTokenByStory(req, res, next){
 
-    const ChapterId = req.body.ChapterId;
+    const ChapterId = req.body.ChapterId || req.params.ChapterId;
     if(!ChapterId){
         return res.status(400).json({
             message: "Necessário informar o id do capítulo."
