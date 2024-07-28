@@ -1,5 +1,5 @@
 const Story = require("../models/Story");
-const Team = require("../models/Team");
+const Chapter = require("../models/Chapter");
 
 module.exports = class StoryController{
 
@@ -39,12 +39,23 @@ module.exports = class StoryController{
         });
     }
 
-    static async list(req, res){
-        
-        const TeamId = req.params.TeamId;
-        const stories = await Story.findAll({where: {TeamId: TeamId}});
+    static async getInfo(req, res){
 
-        res.json(stories);
+        const StoryId = req.params.StoryId;
+        try {
+            const story = await Story.findOne({where: {id: StoryId}, raw: true});
+            const chapters = await Chapter.findAll({where: {StoryId: StoryId}});
+            return res.status(200).json({
+                ...story,
+                chapters: [...chapters]
+            })
+        } 
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                message: "Erro ao resgatar dados da história. Tente novamente mais tarde."
+            });
+        }
 
     }
 }

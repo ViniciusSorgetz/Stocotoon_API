@@ -1,4 +1,5 @@
 const Chapter = require("../models/Chapter");
+const Page = require("../models/Page");
 
 module.exports = class ChapterController{
 
@@ -38,19 +39,22 @@ module.exports = class ChapterController{
         }
     }
 
-    static async list(req, res){
+    static async getInfo(req, res){
 
-        const StoryId = req.params.StoryId;
+        const ChapterId = req.params.ChapterId;
         
         try {
-            const chapters = await Chapter.findAll({where: {StoryId: StoryId}});
-            res.status(200).json(chapters);
+            const chapter = await Chapter.findOne({where: {id: ChapterId}, raw: true})
+            const pages = await Page.findAll({where: {ChapterId: ChapterId}, raw: true});
+            res.status(200).json({
+                ...chapter,
+                pages: [...pages]
+            });
         } 
         catch (error) {
             res.status(500).json({
                 message: "Erro ao listar capítulos"
             })
         }
-
     }
 }

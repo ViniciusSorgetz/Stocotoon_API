@@ -1,4 +1,5 @@
 const Team = require("../models/Team");
+const Story = require("../models/Story");
 const Member = require("../models/Member");
 const User = require("../models/User");
 
@@ -70,22 +71,16 @@ module.exports = class TeamController{
         }
     }
 
-    static async list(req, res){
-        // check user
-        const UserId = req.params.UserId;
-        const user = await User.findOne({where: {id: UserId}});
-        if(!user){
-            return res.status(404).json({
-                message: "Erro ao listar times. Usuário não encontrado."
-            });
-        }
+    static async getInfo(req, res){
 
-        // get user teams
-        const userTeams = await Member.findAll({where: {UserId: UserId}, raw: true});
-        const teams = await Promise.all (userTeams.map(async userTeam => 
-            await Team.findOne({where: {id: userTeam.TeamId}, raw: true})
-        ));
-        res.status(200).json(teams);
+        const TeamId = req.params.TeamId;
+        const team = await Team.findOne({where: {id: TeamId}, raw: true});
+
+        const stories = await Story.findAll({where: {TeamId: TeamId}});
+        return res.status(200).json({
+            ...team,
+            stories: [...stories]
+        });
     }
 
     static async addMember (req, res){

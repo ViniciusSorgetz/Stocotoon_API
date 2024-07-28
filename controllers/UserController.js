@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Team = require("../models/Team");
+const Member = require("../models/Member");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -104,18 +106,32 @@ module.exports = class UserController {
 
     }
 
-    static async getUser(req, res){
+    static async getInfo(req, res){
 
-        const id = req.params.id;
+        const UserId = req.params.UserId;
 
         // check if user exists
-        const user = await User.findOne({where: {id: id}}, {raw: true});
+        const user = await User.findOne({where: {id: UserId}, raw: true});
         if(!user){
             return res.status(404).json({
                 message: "Usuário não encontrado."
             });
         }
-        res.status(200).json({user});
+        const teamsId = await Member.findAll({where: {UserId: UserId}, raw: true});
+        const teams = await Promise.all(
+            teamsId.map(async ({TeamId}) => (
+                Team.findOne({where: {id: TeamId}, raw: true})
+            ))
+        );
+        const {id, name, email, createdAt, updatedAt} = user;
+        return res.status(200).json({
+            id,
+            name,
+            email,
+            createdAt,
+            updatedAt: user.updatedAt,
+            teams: [...teams]
+        });
     }
 
 }

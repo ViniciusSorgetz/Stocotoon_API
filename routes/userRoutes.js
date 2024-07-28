@@ -5,6 +5,6 @@ const checkToken = require("../middleware/checkToken");
 
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
-router.get("/:id", checkToken, UserController.getUser);
+router.get("/:UserId", checkToken, UserController.getInfo);
 
 module.exports = router;
