@@ -1,9 +1,9 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db");
 
-const Team = require("../models/Team");
+const Team = require("./Team");
 
-const Story = db.define("Story", {
+const Chat = db.define("Chat", {
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -14,7 +14,7 @@ const Story = db.define("Story", {
     }
 });
 
-Team.hasMany(Story);
-Story.belongsTo(Team);
+Team.hasMany(Chat);
+Chat.belongsTo(Team);
 
-module.exports = Story;
+module.exports = Chat;

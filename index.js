@@ -13,6 +13,8 @@ const chapterRoutes = require("./routes/chapterRoutes");
 const pageRoutes = require("./routes/pageRoutes");
 const pictureRoutes = require("./routes/pictureRoutes");
 const scriptRoutes = require("./routes/scriptRoutes");
+const chatRoutes = require("./routes/chatRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
 // middleware
 app.use(
@@ -32,6 +34,8 @@ app.use("/chapter", chapterRoutes);
 app.use("/page", pageRoutes);
 app.use("/picture", pictureRoutes);
 app.use("/script", scriptRoutes);
+app.use("/chat", chatRoutes);
+app.use("/message", messageRoutes);
 
 db
     //.sync({force: true})
