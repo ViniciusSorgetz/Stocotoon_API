@@ -37,7 +37,6 @@ module.exports = class PictureController{
     }
 
     static async getContent(req, res){
-        console.log("AAAAAAAAAAAAAAAA");
         try {
             const PageId = req.params.PageId;
             const picture = await Picture.findOne({where: {PageId: PageId}});

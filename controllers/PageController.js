@@ -17,7 +17,7 @@ module.exports = class PageController{
             });
         }
         try {
-            const checkName = await Page.findOne({where: {name: name}});
+            const checkName = await Page.findOne({where: {name: name, ChapterId: ChapterId}});
             if(checkName){
                 return res.status(400).json({
                     message: "Nome de página já em uso."
@@ -61,17 +61,4 @@ module.exports = class PageController{
         }
     }
 
-    static async list(req, res){
-
-        try {
-            const ChapterId = req.params.ChapterId;
-            const pages = await Page.findAll({where: {ChapterId: ChapterId}, raw: true});
-            res.status(200).json(pages);
-        } 
-        catch (error) {
-            res.status(500).json({
-                message: "Erro ao listar páginas. Tente novamente mais tarde."
-            });
-        }
-    }
 }

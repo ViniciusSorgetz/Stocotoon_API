@@ -4,6 +4,6 @@ const PictureController = require("../controllers/PictureController");
 const checkTokenByPage = require("../middleware/checkTokenByPage");
 
 router.get("/:PageId", checkTokenByPage, PictureController.getContent);
-router.put("/save", PictureController.save);
+router.put("/save", checkTokenByPage, PictureController.save);
 
 module.exports = router;
