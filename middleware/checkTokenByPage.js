@@ -2,10 +2,13 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const Page = require("../models/Page");
 const Chapter = require("../models/Chapter");
+const Story = require("../models/Story");
+const Member = require("../models/Member");
+const getDcodedToken = require("../utils/getDecodedToken");
 
 module.exports = async function checkTokenByPage(req, res, next){
 
-    const PageId = req.body.PageId;
+    const PageId = req.body.PageId || req.params.PageId;
 
     if(!PageId){
         return res.status(400).json({
@@ -22,11 +25,9 @@ module.exports = async function checkTokenByPage(req, res, next){
     }
 
     // get UserId
-    const ChapterId = page.ChapterId;
-    const chapter = await Chapter.findOne({where: {id: ChapterId}});
-    const UserId = chapter.UserId;
+    const chapter = await Chapter.findOne({where: {id: page.ChapterId}});
+    const story = await Story.findOne({where: {id: chapter.StoryId}});
 
-    // check if token and UserId match
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -34,6 +35,15 @@ module.exports = async function checkTokenByPage(req, res, next){
         return res.status(401).json({
             message: "Acesso negado"
         });
+    }
+
+    const UserId = await getDcodedToken(token);
+    const checkMember = await Member.findOne({where: {TeamId: story.TeamId, UserId: UserId}});
+
+    if(!checkMember){
+        return res.status(401).json({
+            message: "Usuário sem permissão."
+        })
     }
 
     try {

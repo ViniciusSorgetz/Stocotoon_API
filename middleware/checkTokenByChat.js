@@ -3,7 +3,6 @@ const Chat = require("../models/Chat");
 const Team = require("../models/Team");
 const User = require("../models/User");
 const getDcodedToken = require("../utils/getDecodedToken");
-const { classToInvokable } = require("sequelize/lib/utils");
 
 module.exports = async function checkTokenByChat(req, res, next){
 
