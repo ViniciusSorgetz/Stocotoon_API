@@ -27,7 +27,7 @@ module.exports = class ChatController{
         }
     }
 
-    static async listMessages(req, res){
+    static async getInfo(req, res){
 
         const { ChatId } = req.params;
         try {
@@ -43,7 +43,6 @@ module.exports = class ChatController{
                 message: "Erro ao listar mensagens. Tente novamente mais tarde."
             })
         }
-
     }
 
 }

@@ -1,7 +1,17 @@
+const http = require("http");
 const express = require("express");
 const app = express();
-const cors = require("cors");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server, {
+    cors: {
+        origin: ["http://localhost:5173"]
+    }
+});
 
+const { joinRoom, sendMessage } = require("./socket_io/socket");
+
+const cors = require("cors");
 const db = require("./db");
 
 // routes
@@ -37,11 +47,15 @@ app.use("/script", scriptRoutes);
 app.use("/chat", chatRoutes);
 app.use("/message", messageRoutes);
 
+io.on("connection", (req, res) => {
+    console.log("Conected")
+});
+
 db
     //.sync({force: true})
     .sync()
     .then(() => {
-        app.listen(4000);
+        server.listen(4000);
     })
     .catch((error) => {
         console.log(error);

@@ -34,7 +34,7 @@ const Message = db.define("Message", {
     }
 });
 
-User.belongsToMany(Chat, {through: Message, foreignKey: "UserId"});
-Chat.belongsToMany(User, {through: Message, foreignKey: "ChatId"});
+User.belongsToMany(Chat, {through: { model: Message, unique: false}});
+Chat.belongsToMany(User, {through: { model: Message, unique: false}});
 
 module.exports = Message;

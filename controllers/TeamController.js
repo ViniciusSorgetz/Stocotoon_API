@@ -2,6 +2,7 @@ const Team = require("../models/Team");
 const Story = require("../models/Story");
 const Member = require("../models/Member");
 const User = require("../models/User");
+const Chat = require("../models/Chat");
 
 const getDocodedToken = require("../utils/getDecodedToken");
 
@@ -59,6 +60,10 @@ module.exports = class TeamController{
                 TeamId: createdTeam.id,
                 role: "owner"
             });
+            await Chat.create({
+                name: "Chat01",
+                TeamId: createdTeam.id
+            })
             res.status(201).json({
                 message: "Equipe criada com sucesso!"
             });
@@ -77,9 +82,11 @@ module.exports = class TeamController{
         const team = await Team.findOne({where: {id: TeamId}, raw: true});
 
         const stories = await Story.findAll({where: {TeamId: TeamId}});
+        const chats = await Chat.findAll({where: {TeamId: TeamId}});
         return res.status(200).json({
             ...team,
-            stories: [...stories]
+            stories: [...stories],
+            chats: [...chats]
         });
     }
 
