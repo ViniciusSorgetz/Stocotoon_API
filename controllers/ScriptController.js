@@ -15,7 +15,7 @@ module.exports = class ScriptController{
         }
 
         try {
-            Script.create({PageId, name, content});
+            Script.create({PageId, name: name.trim(), content});
             res.status(201).json({
                 message: "Roteiro criado com sucesso."
             })

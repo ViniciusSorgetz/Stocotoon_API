@@ -12,9 +12,15 @@ module.exports = class ChatController{
                 message: "Necessário informar o nome do chat."
             });
         }
+        const checkChat = await Chat.findOne({where: {name: name}});
+        if(checkChat){
+            return res.status(400).json({
+                message: "Nome do chat já em uso."
+            });
+        }
 
         try {
-            await Chat.create({name, description, TeamId});
+            await Chat.create({name: name.trim(), description: description.trim(), TeamId});
             return res.status(200).json({
                 message: "Chat criado com sucesso!"
             })
