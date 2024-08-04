@@ -21,15 +21,10 @@ module.exports = class StoryController{
         }
 
         // create story
-        const story = description 
-        ? {
+        const story = {
             TeamId, 
             name: name.trim(), 
-            description: description.trim(),
-        }
-        : {
-            TeamId, 
-            name: name.trim()
+            description: description ? description.trim() : null,
         }
 
         await Story.create(story);
@@ -56,6 +51,40 @@ module.exports = class StoryController{
                 message: "Erro ao resgatar dados da história. Tente novamente mais tarde."
             });
         }
+    }
 
+    static async edit(req, res){
+
+        const { StoryId } = req.params;
+        const {name, description} = req.body;
+        const story = await Story.findOne({where: {id: StoryId}});
+
+        if(!name || name.trim().length === 0){
+            return res.status(400).json({
+                message: "Necessário preencher o nome."
+            });
+        }
+        const checkStory = await Story.findOne({where: {name: name, TeamId: story.TeamId}});
+        if(checkStory && checkStory.id !== StoryId){
+            return res.status(400).json({
+                message: "Nome da história já em uso."
+            });
+        }
+        const newStory = {
+            name: name.trim(), 
+            description: description ? description.trim() : null,
+        }
+        try {
+            await Story.update(newStory, {where: {id: StoryId}});
+            return res.status(200).json({
+                message: "História editada com sucesso."
+            })
+        } 
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                message: "Algo deu errado ao editar história. Tente novamente mais tarde."
+            })
+        }
     }
 }

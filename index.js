@@ -1,15 +1,6 @@
 const http = require("http");
 const express = require("express");
 const app = express();
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server, {
-    cors: {
-        origin: ["http://localhost:5173"]
-    }
-});
-
-const { joinRoom, sendMessage } = require("./socket_io/socket");
 
 const cors = require("cors");
 const db = require("./db");
@@ -25,6 +16,7 @@ const pictureRoutes = require("./routes/pictureRoutes");
 const scriptRoutes = require("./routes/scriptRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const verifyToken = require("./socket_io/verifyToken");
 
 // middleware
 app.use(
@@ -47,15 +39,11 @@ app.use("/script", scriptRoutes);
 app.use("/chat", chatRoutes);
 app.use("/message", messageRoutes);
 
-io.on("connection", (req, res) => {
-    console.log("Conected")
-});
-
 db
     //.sync({force: true})
     .sync()
     .then(() => {
-        server.listen(4000);
+        app.listen(4000);
     })
     .catch((error) => {
         console.log(error);
