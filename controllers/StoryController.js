@@ -21,16 +21,17 @@ module.exports = class StoryController{
         }
 
         // create story
-        const story = {
+        const newStory = {
             TeamId, 
             name: name.trim(), 
             description: description ? description.trim() : null,
         }
 
-        await Story.create(story);
+        const story = await Story.create(newStory);
 
         res.status(201).json({
             message: "História criada com sucesso.",
+            story: story
         });
     }
 
@@ -65,7 +66,7 @@ module.exports = class StoryController{
             });
         }
         const checkStory = await Story.findOne({where: {name: name, TeamId: story.TeamId}});
-        if(checkStory && checkStory.id !== StoryId){
+        if(checkStory && checkStory.id != StoryId){
             return res.status(400).json({
                 message: "Nome da história já em uso."
             });
@@ -75,9 +76,11 @@ module.exports = class StoryController{
             description: description ? description.trim() : null,
         }
         try {
-            await Story.update(newStory, {where: {id: StoryId}});
+            await Story.update(newStory, {where: {id: StoryId}, returning: true});
+            const updatedStory = await Story.findOne({where: {id: StoryId}});
             return res.status(200).json({
-                message: "História editada com sucesso."
+                message: "História editada com sucesso.",
+                story: updatedStory
             })
         } 
         catch (error) {

@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "socket": "nodemon ./socket_io/index.js",
-    "start": "nodemon ./index.js"
+    "start": "nodemon ./index.js",
+    "dev": "concurrently \"npm:start\" \"npm:socket\""
   },
   "keywords": [],
   "author": "",
@@ -22,5 +22,8 @@
     "nodemon": "^3.1.2",
     "sequelize": "^6.37.3",
     "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }
