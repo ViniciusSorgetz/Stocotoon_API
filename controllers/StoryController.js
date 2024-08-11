@@ -76,18 +76,17 @@ module.exports = class StoryController{
             description: description ? description.trim() : null,
         }
         try {
-            await Story.update(newStory, {where: {id: StoryId}, returning: true});
+            await Story.update(newStory, {where: {id: StoryId}});
             const updatedStory = await Story.findOne({where: {id: StoryId}});
             return res.status(200).json({
                 message: "História editada com sucesso.",
                 story: updatedStory
-            })
+            });
         } 
         catch (error) {
-            console.log(error);
             return res.status(500).json({
                 message: "Algo deu errado ao editar história. Tente novamente mais tarde."
-            })
+            });
         }
     }
 }

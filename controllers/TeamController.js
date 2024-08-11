@@ -38,19 +38,10 @@ module.exports = class TeamController{
             })
         }
         
-        // team creation
-        let team;
-        
-        if(description){
-            team = {
-                UserId,
-                name: name.trim(),
-                description: description.trim(),
-            }
-        }
-        else{
+        const team = {
             UserId,
-            team = {name: name.trim()}
+            name: name.trim(),
+            description: description ? description.trim() : null,
         }
 
         try {
@@ -65,7 +56,8 @@ module.exports = class TeamController{
                 TeamId: createdTeam.id
             })
             res.status(201).json({
-                message: "Equipe criada com sucesso!"
+                message: "Equipe criada com sucesso!",
+                team: createdTeam
             });
         } 
         catch (error) {
@@ -90,23 +82,71 @@ module.exports = class TeamController{
         });
     }
 
-    static async addMember (req, res){
+    static async edit(req, res){
+        
+        const {TeamId} = req.params;
+        console.log(`TeamID ------- ${TeamId}`);
 
         // check token and if token's user has "owner" role
         const authHeader = req.headers["authorization"];
         const token = authHeader && authHeader.split(" ")[1];
-
         const UserId = await getDocodedToken(token);
-        const TeamId = req.body.TeamId;
+        const owner = await Member.findOne({where: {UserId: UserId, TeamId: TeamId}, raw: true});
+        if(!owner || owner.role !== "owner"){
+            return res.status(400).json({
+                message: "Usuário sem permissão na equipe."
+            });
+        }
 
+        const {name, description} = req.body;
+        if(!name || name.trim().length === 0){
+            return res.status(400).json({
+                message: "Necessário preencher o nome da equipe."
+            });
+        }
+        const checkName = await Team.findOne({where: {name: name}});
+        if(checkName && checkName.id != TeamId){
+            return res.status(400).json({
+                message: "Nome da história já em uso."
+            });
+        }
+
+        const team = {
+            UserId,
+            name: name.trim(),
+            description: description ? description.trim() : null,
+        }
+
+        try {
+            await Team.update(team, {where: {id: TeamId}});
+            const updatedTeam = await Team.findOne({where: {id: TeamId}});
+            return res.status(200).json({
+                message: "Equipe editada com sucesso!",
+                team: updatedTeam
+            })
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Algo deu errado ao editar equipe. Tente novamente mais tarde."
+            });
+        }
+    }
+
+    static async addMember (req, res){
+
+        const TeamId = req.body.TeamId;
         if(!TeamId){
             return res.status(400).json({
                 message: "Necessário informar o id do time."
             });
         }
 
-        const owner = await Member.findOne({where: {UserId: UserId, TeamId: TeamId}});
-
+        // check token and if token's user has "owner" role
+        const authHeader = req.headers["authorization"];
+        const token = authHeader && authHeader.split(" ")[1];
+        const UserId = await getDocodedToken(token);
+        const owner = await Member.findOne({where: {UserId: UserId, TeamId: TeamId}, raw: true});
+        
         if(!owner || owner.role !== "owner"){
             return res.status(400).json({
                 message: "Usuário sem permissão na equipe."

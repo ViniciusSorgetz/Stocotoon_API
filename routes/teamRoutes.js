@@ -7,6 +7,7 @@ const checkToken = require("../middleware/checkToken");
 
 router.post("/create", checkTokenByUser, TeamController.create);
 router.get("/:TeamId", checkTokenByTeam, TeamController.getInfo);
+router.put("/:TeamId", checkTokenByTeam, TeamController.edit);
 router.post("/addMember", checkToken, TeamController.addMember);
 router.delete("/removeMember", checkToken, TeamController.removeMember);
 

@@ -20,9 +20,9 @@ module.exports = async function checkTokenByUser(req, res, next){
 
     const decodedToken = await getDcodedToken(token);
 
-    if (decodedToken !== UserId) {
+    if (decodedToken != UserId) {
         return res.status(400).json({
-            message: "Token de usuário inválido."
+            message: "Token de usuário inválido." + " " + UserId + " " + decodedToken
         });
     }
     else{
