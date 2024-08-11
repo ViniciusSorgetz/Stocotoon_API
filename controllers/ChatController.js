@@ -13,7 +13,7 @@ module.exports = class ChatController{
                 message: "Necessário informar o nome do chat."
             });
         }
-        const checkChat = await Chat.findOne({where: {name: name}});
+        const checkChat = await Chat.findOne({where: {name: name, TeamId: TeamId}});
         if(checkChat){
             return res.status(400).json({
                 message: "Nome do chat já em uso."
