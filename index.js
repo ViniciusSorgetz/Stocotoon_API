@@ -43,7 +43,7 @@ db
     //.sync({force: true})
     .sync()
     .then(() => {
-        app.listen(50821);
+        app.listen(4000);
     })
     .catch((error) => {
         console.log(error);

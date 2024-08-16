@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "socket": "nodemon ./socket_io/index.js",
-    "start": "nodemon ./index.js",
+    "socket": "node ./socket_io/index.js",
+    "start": "node ./index.js",
     "dev": "concurrently \"npm:start\" \"npm:socket\""
   },
   "keywords": [],
