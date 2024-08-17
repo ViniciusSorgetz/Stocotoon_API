@@ -49,9 +49,10 @@ module.exports = class PageController{
                 PageId: page.id,
                 content: {text: "aqui terá o conteúdo do roteiro"}
             });
-
+            const newPage = await Page.findOne({where: {name: name, ChapterId: ChapterId}});
             return res.status(201).json({
-                message: "Página criada com sucesso."
+                message: "Página criada com sucesso.",
+                page: newPage
             })        
         } 
         catch (error) {
