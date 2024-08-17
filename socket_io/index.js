@@ -1,6 +1,6 @@
 const io = require("socket.io")(4100, {
     cors: {
-        origins: ["http://localhost:5173"]
+        origins: ["https://stocotoon.netlify.app/"]
     }
 });
 
