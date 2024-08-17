@@ -5,31 +5,25 @@ module.exports = class ChapterController{
 
     static async create(req, res){
 
-        const chapter = {
-            name: req.body.name,
-            StoryId: req.body.StoryId
-        }
-
-        if(!chapter.name || chapter.name.trim().length === 0){
+        const {name, StoryId} = req.body
+        if(!name || name.trim().length === 0){
             return res.status(400).json({
                 message: "Nome do capítulo necessário"
             });
         }
 
-        const checkChapter = await Chapter.findOne({where: {
-            name: chapter.name, 
-            StoryId: chapter.StoryId
-        }});
+        const checkChapter = await Chapter.findOne({where: {name: name, StoryId: StoryId}});
         if(checkChapter){
             return res.status(400).json({
                 message: "Nome de capítulo já em uso."
             });
         }
-
         try {
-            Chapter.create(chapter);
+            await Chapter.create({name, StoryId});
+            const newChapter = await Chapter.findOne({where: {name: name, StoryId: StoryId}});
             return res.status(200).json({
-                message: "Capítulo criado com sucesso!"
+                message: "Capítulo criado com sucesso!",
+                chapter: newChapter
             })
         } 
         catch (error) {
