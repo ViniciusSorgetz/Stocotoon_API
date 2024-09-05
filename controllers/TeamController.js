@@ -1,5 +1,7 @@
 const Team = require("../models/Team");
 const Story = require("../models/Story");
+const Chapter = require("../models/Chapter");
+const Page = require("../models/Page");
 const Member = require("../models/Member");
 const User = require("../models/User");
 const Chat = require("../models/Chat");
@@ -253,6 +255,58 @@ module.exports = class TeamController{
             return res.status(500).json({
                 message: "Ocorreu um erro. Tente novamente mais tarde."
             });
+        }
+    }
+
+    static async getAmount(req, res){
+
+        const {TeamId} = req.params;
+        
+        try {
+            const stories = await Story.findAll({where: {TeamId: TeamId}});
+
+            let chapters = await Promise.all(stories.map(async story => {
+                return await Chapter.findAll({where: {StoryId: story.id}});
+            }));
+            chapters = [].concat.apply([], chapters)
+
+            let pages = await Promise.all(chapters.map(async chapter => {
+                return await Page.findAll({where: {ChapterId: chapter.id}});
+            }));
+            pages = [].concat.apply([], pages);
+
+            return res.status(200).json({
+                stories: stories.length,
+                chapters: chapters.length,
+                pages: pages.length
+            });
+        } 
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                message: "Erro ao buscar quantidades da equipe. Tente novamente mais tarde."
+            })
+        }
+    }
+
+    static async getMembers(req, res){
+
+        const {TeamId} = req.params;
+        try {
+            const membersId = await Member.findAll({where: {TeamId: TeamId}});
+            const members = await Promise.all(membersId.map(async memberId => {
+                const member = await User.findOne({where: {id: memberId.UserId}, raw: true});
+                return {
+                    ...member,
+                    role: memberId.role
+                }
+            }))
+            return res.status(200).json(members);
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Erro ao buscar membros da equipe, tente novamente mais tarde."
+            })
         }
     }
 }
