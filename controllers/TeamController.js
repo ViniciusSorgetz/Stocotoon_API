@@ -258,65 +258,13 @@ module.exports = class TeamController{
         }
     }
 
-    static async getAmount(req, res){
-
-        const {TeamId} = req.params;
-        
-        try {
-            const stories = await Story.findAll({where: {TeamId: TeamId}});
-
-            let chapters = await Promise.all(stories.map(async story => {
-                return await Chapter.findAll({where: {StoryId: story.id}});
-            }));
-            chapters = [].concat.apply([], chapters)
-
-            let pages = await Promise.all(chapters.map(async chapter => {
-                return await Page.findAll({where: {ChapterId: chapter.id}});
-            }));
-            pages = [].concat.apply([], pages);
-
-            return res.status(200).json({
-                stories: stories.length,
-                chapters: chapters.length,
-                pages: pages.length
-            });
-        } 
-        catch (error) {
-            console.log(error);
-            return res.status(500).json({
-                message: "Erro ao buscar quantidades da equipe. Tente novamente mais tarde."
-            })
-        }
-    }
-
-    static async getMembers(req, res){
-
-        const {TeamId} = req.params;
-        try {
-            const membersId = await Member.findAll({where: {TeamId: TeamId}});
-            const members = await Promise.all(membersId.map(async memberId => {
-                const member = await User.findOne({where: {id: memberId.UserId}, raw: true});
-                return {
-                    ...member,
-                    role: memberId.role
-                }
-            }))
-            return res.status(200).json(members);
-        } 
-        catch (error) {
-            return res.status(500).json({
-                message: "Erro ao buscar membros da equipe, tente novamente mais tarde."
-            })
-        }
-    }
-
     static async getAllInfo(req, res){
 
         const {TeamId} = req.params;
         try {
             // get all members information
             const membersId = await Member.findAll({where: {TeamId: TeamId}});
-            const members = await Promise.all(membersId.map(async memberId => {
+            const membersList = await Promise.all(membersId.map(async memberId => {
                 const member = await User.findOne({where: {id: memberId.UserId}, raw: true});
                 return {
                     name: member.name,
@@ -324,6 +272,8 @@ module.exports = class TeamController{
                     role: memberId.role
                 }
             }));
+            const owners = membersList.filter(member => member.role === "owner");
+            const members = membersList.filter(member => member.role === "member");
 
             // get amount of stories, chapters and pages information
             const stories = await Story.findAll({where: {TeamId: TeamId}});
@@ -347,7 +297,10 @@ module.exports = class TeamController{
                     chapters: chapters.length,
                     pages: pages.length
                 },
-                members: [...members]
+                members: {
+                    owners: [...owners],
+                    members: [...members]
+                }
             });
         } 
         catch (error) {
