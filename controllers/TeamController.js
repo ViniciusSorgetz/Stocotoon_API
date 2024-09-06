@@ -309,4 +309,51 @@ module.exports = class TeamController{
             })
         }
     }
+
+    static async getAllInfo(req, res){
+
+        const {TeamId} = req.params;
+        try {
+            // get all members information
+            const membersId = await Member.findAll({where: {TeamId: TeamId}});
+            const members = await Promise.all(membersId.map(async memberId => {
+                const member = await User.findOne({where: {id: memberId.UserId}, raw: true});
+                return {
+                    name: member.name,
+                    email: member.email,
+                    role: memberId.role
+                }
+            }));
+
+            // get amount of stories, chapters and pages information
+            const stories = await Story.findAll({where: {TeamId: TeamId}});
+            let chapters = await Promise.all(stories.map(async story => {
+                return await Chapter.findAll({where: {StoryId: story.id}});
+            }));
+            chapters = [].concat.apply([], chapters)
+
+            let pages = await Promise.all(chapters.map(async chapter => {
+                return await Page.findAll({where: {ChapterId: chapter.id}});
+            }));
+            pages = [].concat.apply([], pages);
+            
+            // get team information
+            const team = await Team.findOne({where: {id: TeamId}, raw: true});
+
+            return res.status(200).json({
+                ...team,
+                amount: {
+                    stories: stories.length,
+                    chapters: chapters.length,
+                    pages: pages.length
+                },
+                members: [...members]
+            });
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Erro ao buscar membros da equipe, tente novamente mais tarde."
+            })
+        }
+    }
 }
