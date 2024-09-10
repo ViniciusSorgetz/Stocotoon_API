@@ -187,7 +187,12 @@ module.exports = class TeamController{
                 role: "member"
             });
             return res.status(200).json({
-                message: "Usuário adicionado ao time."
+                message: "Usuário adicionado ao time.",
+                member: {
+                    email: member.email,
+                    name: member.name,
+                    role: "member"
+                }
             });
         } 
         catch (error) {

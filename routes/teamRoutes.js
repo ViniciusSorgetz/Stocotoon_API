@@ -10,6 +10,6 @@ router.get("/:TeamId", checkTokenByTeam, TeamController.getInfo);
 router.get("/:TeamId/all", checkTokenByTeam, TeamController.getAllInfo);
 router.put("/:TeamId", checkTokenByTeam, TeamController.edit);
 router.post("/addMember", checkToken, TeamController.addMember);
-router.delete("/removeMember", checkToken, TeamController.removeMember);
+router.post("/removeMember", checkToken, TeamController.removeMember);
 
 module.exports = router;

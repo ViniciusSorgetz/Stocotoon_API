@@ -9,7 +9,7 @@ module.exports = function checkToken(req, res, next){
 
     if(!token){
         return res.status(401).json({
-            message: "Acesso negado"
+            message: "Acesso negado" + " " + token
         });
     }
 
