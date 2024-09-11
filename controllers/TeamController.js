@@ -274,6 +274,7 @@ module.exports = class TeamController{
                 return {
                     name: member.name,
                     email: member.email,
+                    profilePictureURL: member.profilePictureURL,
                     role: memberId.role
                 }
             }));

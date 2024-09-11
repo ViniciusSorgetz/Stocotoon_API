@@ -5,6 +5,15 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+const serviceAccount = require("../stocotoon-firebase-adminsdk-ssp44-45ef092961.json");
+const admin = require("firebase-admin");
+admin.initializeApp({
+    storageBucket: "gs://stocotoon.appspot.com",
+    credential: admin.credential.cert(serviceAccount)
+});
+const bucket = admin.storage().bucket();
+const uuid = require("uuid-v4");
+
 module.exports = class UserController {
 
     static async register(req, res){
@@ -103,7 +112,73 @@ module.exports = class UserController {
                 message: "Erro ao efetuar login. Tente novamente mais tarde."
             })
         }
+    }
 
+    static async edit(req, res){
+
+        const { name } = req.body;
+        const { UserId } = req.params;
+
+        if(!name || name.trim().length === 0){
+            return res.status(400).json({
+                message: "Necessário preencher o nome."
+            });
+        }
+
+        const checkName = await User.findOne({where: {name: name}});
+        if(checkName && checkName.id != UserId){
+            return res.status(400).json({
+                message: "Nome de usuário já em uso."
+            })
+        }
+
+        if(!req.file){
+            await User.update({name}, {where: {id: UserId}});
+            const updatedUser = await User.findOne({where: {id: UserId}});
+            return res.status(200).json({
+                message: "Nome do usuário editado com sucesso.",
+                user: {
+                    name: updatedUser.name,
+                    email: updatedUser.email
+                }
+            })
+        }
+        
+        const metaData = {
+            metaData: {
+                firebaseStorageDownloadTokens: uuid()
+            },
+            contentType: req.file.mimetype,
+            cacheControl: 'public, max-age=31536000'
+        };
+    
+        const blob = bucket.file(new Date().getTime() + "." + req.file.originalname.split(".")[1]);
+        const blobStream = blob.createWriteStream({
+            metadata: metaData,
+            gzip: true
+        });
+    
+        blobStream.on("error", err => {
+            return res.status(500).json({
+                message: "Erro ao fazer upload da imagem. Tente novamente mais tarde."
+            });
+        });
+    
+        blobStream.on("finish", async () => {
+            const imageURL = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${blob.name}?alt=media&token=`;
+            await User.update({name, profilePictureURL: imageURL}, {where: {id: UserId}});
+            const updatedUser = await User.findOne({where: {id: UserId}});
+            return res.status(200).json({
+                message: "Usuário editado com sucesso.",
+                user: {
+                    name: updatedUser.name,
+                    email: updatedUser.email,
+                    profilePictureURL: updatedUser.profilePictureURL
+                }
+            });
+        });
+    
+        blobStream.end(req.file.buffer);
     }
 
     static async getInfo(req, res){
@@ -133,5 +208,4 @@ module.exports = class UserController {
             teams: [...teams]
         });
     }
-
 }

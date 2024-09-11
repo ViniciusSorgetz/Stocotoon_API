@@ -16,6 +16,10 @@ const User = db.define("User", {
     password: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    profilePictureURL: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 });
 
