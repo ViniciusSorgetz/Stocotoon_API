@@ -103,7 +103,8 @@ module.exports = class UserController {
                 message: "Login realizado com sucesso.",
                 name: user.name,
                 id: user.id,
-                token
+                token,
+                profilePictureURL: user.profilePictureURL
             })
             
         } catch (error) {
@@ -143,6 +144,13 @@ module.exports = class UserController {
                 }
             })
         }
+
+        const oldUser = await User.findOne({where: {id: UserId}});
+        console.log(oldUser.profilePictureURL);
+        const imageName = oldUser.profilePictureURL.split("/")[7].split("?")[0];
+        await admin.storage().bucket().file(imageName).delete()
+        .then(() => console.log(imageName +" deletada!"))
+        .catch(error => console.log(error));
         
         const metaData = {
             metaData: {
