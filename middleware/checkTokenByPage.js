@@ -20,7 +20,7 @@ module.exports = async function checkTokenByPage(req, res, next){
     const page = await Page.findOne({where: {id: PageId}});
     if(!page){
         return res.status(404).json({
-            message: "Page não encontrado."
+            message: "Página não encontrada."
         });
     }
 

@@ -51,4 +51,40 @@ module.exports = class ChapterController{
             })
         }
     }
+
+    static async edit(req, res){
+
+        const { ChapterId } = req.params;
+        const { name } = req.body;
+        const chapter = await Chapter.findOne({where: {id: ChapterId}});
+
+        if(!name || name.trim().length == 0){
+            return res.status(400).json({
+                message: "Necessário informar o nome do capítulo."
+            })
+        }
+
+        try {
+            // verificar novo nome do capítulo
+            const checkChapter = await Chapter.findOne({where: {name, StoryId: chapter.StoryId}});
+            if(checkChapter && checkChapter.id != chapter.id){
+                return res.status(400).json({
+                    message: "Nome de capítulo já em uso."
+                });
+            }
+            const newChapter = {name: name.trim()}
+            await Chapter.update(newChapter, {where: {id: ChapterId}});
+            const updatedChapter = await Chapter.findOne({where: {id: ChapterId}});
+            return res.status(200).json({
+                message: "Capítulo editado com sucesso.",
+                chapter: updatedChapter
+            });
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Erro ao editar capítulo. Tente novamente mais tarde."
+            })
+        }
+
+    }
 }

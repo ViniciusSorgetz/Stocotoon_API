@@ -62,4 +62,40 @@ module.exports = class PageController{
         }
     }
 
+    static async edit(req, res){
+
+        const { PageId } = req.params;
+        const { name } = req.body;
+        const page = await Page.findOne({where: {id: PageId}});
+
+        if(!name || name.trim().length == 0){
+            return res.status(400).json({
+                message: "Necessário informar o nome da página."
+            })
+        }
+
+        try {
+            // verificar novo nome da página
+            const checkPage = await Page.findOne({where: {name, ChapterId: page.ChapterId}});
+            if(checkPage && checkPage.id != page.id){
+                return res.status(400).json({
+                    message: "Nome de página já em uso."
+                });
+            }
+            const newPage = {name: name.trim()}
+            await Page.update(newPage, {where: {id: PageId}});
+            const updatedPage = await Page.findOne({where: {id: PageId}});
+            return res.status(200).json({
+                message: "Página editada com sucesso.",
+                page: updatedPage
+            });
+        } 
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                message: "Erro ao editar página. Tente novamente mais tarde."
+            })
+        }
+    }
+
 }

@@ -6,5 +6,6 @@ const checkTokenByChapter = require ("../middleware/checkTokenByChapter");
 
 router.post("/create", checkTokenByStory, ChapterController.create);
 router.get("/:ChapterId", checkTokenByChapter, ChapterController.getInfo);
+router.put("/:ChapterId", checkTokenByChapter, ChapterController.edit);
 
 module.exports = router;
