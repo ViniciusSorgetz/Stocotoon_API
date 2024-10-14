@@ -9,6 +9,7 @@ router.post("/create", checkTokenByUser, TeamController.create);
 router.get("/:TeamId", checkTokenByTeam, TeamController.getInfo);
 router.get("/:TeamId/all", checkTokenByTeam, TeamController.getAllInfo);
 router.put("/:TeamId", checkTokenByTeam, TeamController.edit);
+router.delete("/:TeamId", checkTokenByTeam, TeamController.delete);
 router.post("/addMember", checkToken, TeamController.addMember);
 router.post("/removeMember", checkToken, TeamController.removeMember);
 

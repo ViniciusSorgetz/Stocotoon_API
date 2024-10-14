@@ -98,4 +98,22 @@ module.exports = class PageController{
         }
     }
 
+    static async delete(req, res){
+
+        const { PageId } = req.params;
+
+        try {
+            await Page.destroy({where: {id: PageId}});
+            return res.status(200).json({
+                message: "Página deletada com sucesso.",
+            });
+        } 
+        catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                message: "Erro ao editar página. Tente novamente mais tarde."
+            })
+        }
+    }
+
 }

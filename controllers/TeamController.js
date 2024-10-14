@@ -87,7 +87,6 @@ module.exports = class TeamController{
     static async edit(req, res){
         
         const {TeamId} = req.params;
-        console.log(`TeamID ------- ${TeamId}`);
 
         // check token and if token's user has "owner" role
         const authHeader = req.headers["authorization"];
@@ -131,6 +130,34 @@ module.exports = class TeamController{
             return res.status(500).json({
                 message: "Algo deu errado ao editar equipe. Tente novamente mais tarde."
             });
+        }
+    }
+
+    static async delete (req, res){
+
+        const {TeamId} = req.params;
+
+        // check token and if token's user has "owner" role
+        const authHeader = req.headers["authorization"];
+        const token = authHeader && authHeader.split(" ")[1];
+        const UserId = await getDocodedToken(token);
+        const owner = await Member.findOne({where: {UserId: UserId, TeamId: TeamId}, raw: true});
+        if(!owner || owner.role !== "owner"){
+            return res.status(400).json({
+                message: "Usuário sem permissão na equipe."
+            });
+        }
+
+        try {
+            await Team.destroy({where: {id: TeamId}});
+            return res.status(200).json({
+                message: "Equipe deletada com sucesso."
+            });
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Erro ao deleter equipe. Tente novamente mais tarde."
+            })
         }
     }
 

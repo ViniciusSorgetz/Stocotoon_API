@@ -17,7 +17,7 @@ const Member = db.define("Member", {
     }
 });
 
-User.belongsToMany(Team, {through: Member});
-Team.belongsToMany(User, {through: Member});
+User.belongsToMany(Team, {through: Member, onDelete: 'CASCADE'});
+Team.belongsToMany(User, {through: Member, onDelete: 'CASCADE'});
 
 module.exports = Member;

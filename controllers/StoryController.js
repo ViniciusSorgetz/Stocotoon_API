@@ -89,4 +89,21 @@ module.exports = class StoryController{
             });
         }
     }
+
+    static async delete(req, res){
+
+        const { StoryId } = req.params;
+
+        try {
+            await Story.destroy({where: {id: StoryId}});
+            return res.status(200).json({
+                message: "História deletada com sucesso.",
+            });
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Algo deu errado ao deletar história. Tente novamente mais tarde."
+            });
+        }
+    }
 }

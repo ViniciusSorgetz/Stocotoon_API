@@ -14,7 +14,7 @@ const Story = db.define("Story", {
     }
 });
 
-Team.hasMany(Story);
+Team.hasMany(Story, {onDelete: "CASCADE"});
 Story.belongsTo(Team);
 
 module.exports = Story;

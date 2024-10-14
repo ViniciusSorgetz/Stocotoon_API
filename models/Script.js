@@ -9,7 +9,7 @@ const Script = db.define("Script", {
     },
 });
 
-Script.belongsTo(Page);
+Script.belongsTo(Page, {onDelete: 'CASCADE'});
 Page.hasOne(Script);
 
 module.exports = Script;

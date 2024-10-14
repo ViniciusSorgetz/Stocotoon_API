@@ -9,7 +9,7 @@ const Picture = db.define("Picture", {
     }
 });
 
-Picture.belongsTo(Page);
+Picture.belongsTo(Page, {onDelete: 'CASCADE'});
 Page.hasOne(Picture);
 
 module.exports = Picture; 

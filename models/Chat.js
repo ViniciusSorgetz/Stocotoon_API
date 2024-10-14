@@ -14,7 +14,7 @@ const Chat = db.define("Chat", {
     }
 });
 
-Team.hasMany(Chat);
+Team.hasMany(Chat, {onDelete: "CASCADE"});
 Chat.belongsTo(Team);
 
 module.exports = Chat;

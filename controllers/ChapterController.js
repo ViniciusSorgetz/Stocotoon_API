@@ -85,6 +85,22 @@ module.exports = class ChapterController{
                 message: "Erro ao editar capítulo. Tente novamente mais tarde."
             })
         }
+    }
 
+    static async delete(req, res){
+
+        const { ChapterId } = req.params;
+
+        try {
+            await Chapter.destroy({where: {id: ChapterId}});
+            return res.status(200).json({
+                message: "Capítulo deletado com sucesso.",
+            });
+        } 
+        catch (error) {
+            return res.status(500).json({
+                message: "Erro ao deletar capítulo. Tente novamente mais tarde."
+            })
+        }
     }
 }

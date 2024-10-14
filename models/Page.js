@@ -10,7 +10,7 @@ const Page = db.define("Page", {
     },
 });
 
-Page.belongsTo(Chapter);
+Page.belongsTo(Chapter, {onDelete: 'CASCADE'});
 Chapter.hasMany(Page);
 
 module.exports = Page;
