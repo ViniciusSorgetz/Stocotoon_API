@@ -2,9 +2,11 @@ const User = require("../models/User");
 const Team = require("../models/Team");
 const Member = require("../models/Member");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+/*
+FIREBASE SYSTEM
+const jwt = require("jsonwebtoken");
 const serviceAccount = require("../stocotoon-firebase-adminsdk-ssp44-45ef092961.json");
 const admin = require("firebase-admin");
 admin.initializeApp({
@@ -13,6 +15,7 @@ admin.initializeApp({
 });
 const bucket = admin.storage().bucket();
 const uuid = require("uuid-v4");
+*/
 
 module.exports = class UserController {
 
@@ -132,7 +135,8 @@ module.exports = class UserController {
                 message: "Nome de usuário já em uso."
             })
         }
-
+        /* 
+        IMAGE SYSTEM WITH FIREBASE
         if(!req.file){
             await User.update({name}, {where: {id: UserId}});
             const updatedUser = await User.findOne({where: {id: UserId}});
@@ -144,13 +148,14 @@ module.exports = class UserController {
                 }
             })
         }
-
+        
         const oldUser = await User.findOne({where: {id: UserId}});
         console.log(oldUser.profilePictureURL);
         const imageName = oldUser.profilePictureURL.split("/")[7].split("?")[0];
         await admin.storage().bucket().file(imageName).delete()
         .then(() => console.log(imageName +" deletada!"))
         .catch(error => console.log(error));
+        
         
         const metaData = {
             metaData: {
@@ -187,6 +192,19 @@ module.exports = class UserController {
         });
     
         blobStream.end(req.file.buffer);
+
+        */
+
+        await User.update({name}, {where: {id: UserId}});
+            const updatedUser = await User.findOne({where: {id: UserId}});
+            return res.status(200).json({
+                message: "Usuário editado com sucesso.",
+                user: {
+                    name: updatedUser.name,
+                    email: updatedUser.email,
+                }
+            });
+
     }
 
     static async getInfo(req, res){
