@@ -1,22 +1,22 @@
 {
   "development": {
-    "username": "root",
-    "password": "password",
-    "database": "minhaapi",
+    "username": "julia",
+    "password": "1234",
+    "database": "stocotoon_api",
     "host": "localhost",
     "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": "password",
-    "database": "minhaapi",
+    "username": "julia",
+    "password": "1234",
+    "database": "stocotoon_api",
     "host": "localhost",
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": "password",
-    "database": "minhaapi",
+    "username": "julia",
+    "password": "1234",
+    "database": "stocotoon_api",
     "host": "localhost",
     "dialect": "mysql"
   }

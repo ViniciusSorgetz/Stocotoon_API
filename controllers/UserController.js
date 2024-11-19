@@ -3,10 +3,10 @@ const Team = require("../models/Team");
 const Member = require("../models/Member");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 /*
 FIREBASE SYSTEM
-const jwt = require("jsonwebtoken");
 const serviceAccount = require("../stocotoon-firebase-adminsdk-ssp44-45ef092961.json");
 const admin = require("firebase-admin");
 admin.initializeApp({

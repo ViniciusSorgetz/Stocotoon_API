@@ -58,7 +58,7 @@ module.exports = class PictureController{
             res.status(200).json({
                 message: "Página salva com sucesso."
             })
-        } 
+        }
         catch (error) {
             console.log(error);
             res.json({

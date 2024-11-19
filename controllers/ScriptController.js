@@ -26,4 +26,35 @@ module.exports = class ScriptController{
             })
         }
     }
+
+    static async getContent(req, res){
+        try {
+            const PageId = req.params.PageId;
+            const script = await Script.findOne({where: {PageId: PageId}});
+            res.status(200).json(script);
+        } 
+        catch (error) {
+            console.log(error);
+            res.json({
+                message: "Erro ao buscar arquivo. Tente novamente mais tarde."
+            });
+        }
+    }
+
+    static async save(req, res){
+        try {
+            const {content, PageId} = req.body;
+            const script = await Script.findOne({where: {PageId: PageId}});
+            await Script.update({content: content}, {where: {id: script.id}});
+            res.status(200).json({
+                message: "Roteiro salvo com sucesso."
+            })
+        }
+        catch (error) {
+            console.log(error);
+            res.json({
+                message: "Erro ao buscar arquivo. Tente novamente mais tarde."
+            });
+        }
+    }
 }

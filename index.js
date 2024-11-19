@@ -24,9 +24,12 @@ app.use(
     })
 );
 app.use(express.json());
+/*
 app.use(cors(app.use(cors({
-    origin: 'https://stocotoon.netlify.app',
-}))));
+    // origin: 'https://stocotoon.netlify.app',
+}))));*/
+
+app.use(cors());
 
 // config routes
 app.use("/user", userRoutes);
