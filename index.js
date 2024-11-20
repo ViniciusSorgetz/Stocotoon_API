@@ -19,17 +19,23 @@ const verifyToken = require("./socket_io/verifyToken");
 
 // middleware
 app.use(
-    express.urlencoded({
-        extended: true
-    })
+  express.urlencoded({
+    extended: true,
+  })
 );
 app.use(express.json());
-/*
-app.use(cors(app.use(cors({
-    // origin: 'https://stocotoon.netlify.app',
-}))));*/
 
-app.use(cors());
+app.use(
+  cors(
+    app.use(
+      cors({
+        origin: "https://stocotoon.netlify.app",
+      })
+    )
+  )
+);
+
+// app.use(cors());
 
 // config routes
 app.use("/user", userRoutes);
@@ -44,11 +50,11 @@ app.use("/chat", chatRoutes);
 app.use("/message", messageRoutes);
 
 db
-    //.sync({force: true})
-    .sync()
-    .then(() => {
-        app.listen(4000);
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+  //.sync({force: true})
+  .sync()
+  .then(() => {
+    app.listen(4000);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
