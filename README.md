@@ -1,14 +1,14 @@
 
 # Stocotoon API
 
-## API de um site para criação e organização de storyboards de Histórias em Quadrinho
+## API de um site para criação e organização de storyboards de História em Quadrinhos
 
 Esta API é de um site feito como Trabalho de Conclusão de Curso de uma Escola de Ensino Médio Técnica. O objetivo do site é auxiliar na criação de storybords, fazendo isso através de diversas funcionalidades.
 
 Site hospedado (hospedagem expira em 17/01/2025) : [Stocotoon](https://stocotoon.netlify.app/)
 
 ### Principais funcionalidades
-- Login
+- Sistema de Login
 - Gerenciamento de equipes
   - Adicionar membro, remover membro, alterar descrição e nome da equipe
 - Organização por time, história e capítulo
