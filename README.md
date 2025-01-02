@@ -5,6 +5,8 @@
 
 Esta API é de um site feito como Trabalho de Conclusão de Curso de uma Escola de Ensino Médio Técnica. O objetivo do site é auxiliar na criação de storybords, fazendo isso através de diversas funcionalidades.
 
+Site hospedado (hospedagem expira em 17/01/2025) : [Stocotoon](https://stocotoon.netlify.app/)
+
 ### Principais funcionalidades
 - Login
 - Gerenciamento de equipes
