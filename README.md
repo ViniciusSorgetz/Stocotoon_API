@@ -1,26 +1,22 @@
+# ⚙️ Stocotoon API
 
-# Stocotoon API
+## 🔌 API for a website focused on creating and organizing Comic Book storyboards
 
-## API de um site para criação e organização de storyboards de Histórias em Quadrinhos
+This API was developed as a Final Course Project for a Technical High School. The main goal of the platform is to assist in storyboard creation through several features.
 
-Esta API é de um site feito como Trabalho de Conclusão de Curso de uma Escola de Ensino Médio Técnica. O objetivo do site é auxiliar na criação de storybords, fazendo isso através de diversas funcionalidades.
+### 🚀 Main Features
+- Login system  
+- Team management  
+  - Add member, remove member, edit team name and description  
+- Organization by team, story, and chapter  
+- JWT authentication on every route  
+- Real-time team chat  
 
-Site hospedado (hospedagem expira em 17/01/2025) : [Stocotoon](https://stocotoon.netlify.app/)
+### 🛠️ Main Technologies Used
+- Node.js
+- Express.js  
+- MySQL  
+- Sequelize  
+- Socket.io  
 
-### Principais funcionalidades
-- Sistema de Login
-- Gerenciamento de equipes
-  - Adicionar membro, remover membro, alterar descrição e nome da equipe
-- Organização por time, história e capítulo
-- Autentificação por JWT em cada rota
-- Chat em tempo real para equipes
-
-### Principais tecnologias utilizadas
-- JavaScript
-- Express.js
-- MySQL
-- Sequelize
-- Socket_io
-
-OBS: O Socket_io que foi usado de fato na aplicação se encontra em outro repositório, mas escolhi citá-lo aqui.
-
+OBS: The Socket.io implementation actually used in the application is located in another repository, but I chose to mention it here.
